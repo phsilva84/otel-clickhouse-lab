@@ -1,0 +1,15 @@
+variable "name_prefix" { type = string }
+variable "zone" { type = string }
+variable "machine_type" { type = string }
+variable "disk_size_gb" { type = number }
+variable "swap_size_gb" { type = number }
+variable "subnet_self_link" { type = string }
+variable "network_tag" { type = string }
+variable "service_account_email" { type = string }
+variable "repo_url" { type = string }
+variable "repo_ref" { type = string }
+variable "project_id" { type = string }
+variable "bucket_name" { type = string }
+variable "subscription_name" { type = string }
+variable "secret_id" { type = string }
+variable "labels" { type = map(string) }

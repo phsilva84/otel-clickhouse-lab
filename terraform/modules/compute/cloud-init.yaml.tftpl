@@ -1,0 +1,24 @@
+#cloud-config
+package_update: true
+packages: [ca-certificates, curl, git, make]
+
+write_files:
+  - path: /etc/otel-lab.env
+    permissions: "0644"
+    content: |
+      GCP_PROJECT=${project_id}
+      FAILOVER_BUCKET=${bucket_name}
+      RECOVERY_SUBSCRIPTION=${subscription_name}
+      CLICKHOUSE_SECRET=${secret_id}
+
+runcmd:
+  # Swap: 1 GB de RAM é apertado p/ ClickHouse + Collector + Grafana
+  - fallocate -l ${swap_size_gb}G /swapfile
+  - chmod 600 /swapfile
+  - mkswap /swapfile
+  - swapon /swapfile
+  - echo '/swapfile none swap sw 0 0' >> /etc/fstab
+  - sysctl -w vm.swappiness=20
+  - curl -fsSL https://get.docker.com | sh
+  - git clone --branch ${repo_ref} ${repo_url} /opt/otel-lab
+  - cd /opt/otel-lab && docker compose --env-file /etc/otel-lab.env up -d
