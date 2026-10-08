@@ -12,3 +12,5 @@ crash.log
 
 tfplan
 plan.txt
+# arquivo gerado pelo entrypoint do ClickHouse
+clickhouse/users.d/*-user.xml
