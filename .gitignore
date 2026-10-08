@@ -9,3 +9,6 @@ crash.log
 # Local
 .env
 *.log
+
+tfplan
+plan.txt
