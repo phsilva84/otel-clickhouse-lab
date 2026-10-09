@@ -1,0 +1,30 @@
+# HyperDX (UI) + MongoDB, rodando no PC. O ClickHouse fica na VM e e acessado por tunel SSH:
+#   gcloud compute ssh otel-lab-vm --zone us-central1-a --project phlab-otel-lab-01 -- -N -L 18123:localhost:8123 -o ServerAliveInterval=30
+# No HyperDX, host da conexao: http://host.docker.internal:18123
+# Tags: placeholders. Confirme/fixe as versoes que voce validar.
+name: hyperdx-lab
+
+services:
+  db:
+    image: ${MONGO_IMAGE:-mongo:5.0.32-focal}
+    restart: unless-stopped
+    volumes:
+      - mongo-data:/data/db
+
+  hyperdx:
+    image: ${HYPERDX_IMAGE:-docker.hyperdx.io/hyperdx/hyperdx:latest}
+    restart: unless-stopped
+    depends_on:
+      - db
+    ports:
+      - "127.0.0.1:8080:8080"
+    environment:
+      MONGO_URI: mongodb://db:27017/hyperdx
+      HYPERDX_API_KEY: ${HYPERDX_API_KEY:-lab-local-key}
+      EXPRESS_SESSION_SECRET: ${HYPERDX_SESSION_SECRET:-troque-este-valor-no-env}
+      USAGE_STATS_ENABLED: "false"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+
+volumes:
+  mongo-data:
